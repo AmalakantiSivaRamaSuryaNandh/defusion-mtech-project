@@ -1,0 +1,15 @@
+{
+  "data_dir": "data/coco/train2017",
+  "output_dir": "runs/cud",
+  "crop_size": 256,
+  "epochs": 50,
+  "batch_size": 8,
+  "learning_rate": 0.001,
+  "lr_step_size": 10,
+  "lr_gamma": 0.5,
+  "base_channels": 32,
+  "num_workers": 0,
+  "seed": 42,
+  "max_images": 50000,
+  "mixed_precision": false
+}

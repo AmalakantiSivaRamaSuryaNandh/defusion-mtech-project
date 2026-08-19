@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.evaluate_pairs import sha256_file, summarize_records
+from defusion_mtech.evaluation import sha256_file, summarize_records
 
 
 def test_evaluation_summary_includes_count_mean_and_sample_std() -> None:

@@ -4,18 +4,17 @@ from __future__ import annotations
 
 import argparse
 import csv
-import hashlib
 import json
 import platform
 import sys
 import time
 from pathlib import Path
 
-import numpy as np
 import torch
 
 from defusion_mtech.baselines import FUSION_METHODS, fuse
 from defusion_mtech.dataset import SUPPORTED_EXTENSIONS
+from defusion_mtech.evaluation import sha256_file, summarize_records
 from defusion_mtech.image_io import align_pair, load_rgb, save_image
 from defusion_mtech.inference import fuse_with_model, load_model
 from defusion_mtech.metrics import fusion_metrics
@@ -56,30 +55,6 @@ def resolve_device(requested: str) -> torch.device:
     if requested == "auto":
         return torch.device("cuda" if torch.cuda.is_available() else "cpu")
     return torch.device(requested)
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as stream:
-        while chunk := stream.read(1024 * 1024):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def summarize_records(
-    records: list[dict[str, str | float]], methods: list[str]
-) -> dict[str, dict[str, int | float]]:
-    metric_fields = [field for field in records[0] if field not in {"pair", "method"}]
-    summary: dict[str, dict[str, int | float]] = {}
-    for method in methods:
-        rows = [record for record in records if record["method"] == method]
-        method_summary: dict[str, int | float] = {"pair_count": len(rows)}
-        for field in metric_fields:
-            values = np.asarray([float(row[field]) for row in rows], dtype=np.float64)
-            method_summary[f"{field}_mean"] = float(np.mean(values))
-            method_summary[f"{field}_std"] = float(np.std(values, ddof=1 if len(values) > 1 else 0))
-        summary[method] = method_summary
-    return summary
 
 
 def main() -> None:

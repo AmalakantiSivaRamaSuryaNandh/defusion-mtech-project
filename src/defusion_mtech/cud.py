@@ -97,8 +97,7 @@ class CUDLoss(nn.Module):
         reconstruction = F.l1_loss(predictions["fused"], targets.reconstruction)
         decomposition = common + unique1 + unique2
         total = (
-            self.decomposition_weight * decomposition
-            + self.reconstruction_weight * reconstruction
+            self.decomposition_weight * decomposition + self.reconstruction_weight * reconstruction
         )
         return {
             "total": total,

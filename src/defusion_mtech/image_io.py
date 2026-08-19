@@ -47,9 +47,7 @@ def align_pair(
         return image_a, image_b
 
     if strategy == "strict":
-        raise ValueError(
-            f"Source image sizes differ: {image_a.shape[:2]} and {image_b.shape[:2]}"
-        )
+        raise ValueError(f"Source image sizes differ: {image_a.shape[:2]} and {image_b.shape[:2]}")
 
     if strategy == "resize_b_to_a":
         height, width = image_a.shape[:2]

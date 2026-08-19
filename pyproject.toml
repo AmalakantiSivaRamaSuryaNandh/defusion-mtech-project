@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "defusion-mtech"
 version = "0.1.0"
-description = "An educational self-supervised common/unique decomposition project for image fusion"
+description = "A label-free deep learning framework for image fusion using self-supervised feature decomposition"
 readme = "README.md"
 requires-python = ">=3.10,<3.14"
 license = { text = "MIT" }
 authors = [
-  { name = "M.Tech Project Student" }
+  { name = "Amalakanti Siva Rama Surya Nandh" }
 ]
 keywords = ["image-fusion", "self-supervised-learning", "pytorch", "streamlit", "computer-vision"]
 classifiers = [
@@ -20,6 +20,7 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
+
 dependencies = [
   "numpy>=1.26,<3",
   "Pillow>=10,<13",
@@ -29,6 +30,11 @@ dependencies = [
   "streamlit>=1.38,<2",
   "torch>=2.3,<3",
 ]
+
+[project.urls]
+Homepage = "https://github.com/AmalakantiSivaRamaSuryaNandh/label-free-deep-learning-image-fusion"
+Repository = "https://github.com/AmalakantiSivaRamaSuryaNandh/label-free-deep-learning-image-fusion"
+Issues = "https://github.com/AmalakantiSivaRamaSuryaNandh/label-free-deep-learning-image-fusion/issues"
 
 [project.optional-dependencies]
 dev = [

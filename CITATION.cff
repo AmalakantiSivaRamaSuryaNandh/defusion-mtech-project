@@ -1,12 +1,15 @@
 cff-version: 1.2.0
-title: "Label-Free Image Fusion Through Self-Supervised Feature Decomposition"
+title: "A Label-Free Deep Learning Framework for Image Fusion Through Self-Supervised Feature Decomposition"
 message: "Please cite this educational implementation and the original DeFusion paper."
 type: software
 authors:
-  - family-names: "M.Tech Project Student"
+  - family-names: "Amalakanti"
+    given-names: "Siva Rama Surya Nandh"
 version: 0.1.0
 date-released: 2026-08-19
 license: MIT
+repository-code: "https://github.com/AmalakantiSivaRamaSuryaNandh/label-free-deep-learning-image-fusion"
+url: "https://github.com/AmalakantiSivaRamaSuryaNandh/label-free-deep-learning-image-fusion"
 references:
   - type: conference-paper
     title: "Fusion from Decomposition: A Self-Supervised Decomposition Approach for Image Fusion"

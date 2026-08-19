@@ -1,167 +1,204 @@
-# Label-Free Image Fusion Through Self-Supervised Feature Decomposition
+# A Label-Free Deep Learning Framework for Image Fusion Through Self-Supervised Feature Decomposition
 
-This repository is a runnable M.Tech project for combining two aligned source images into a
-single fused result. It includes five classical baselines, a compact PyTorch network trained by a
-Common and Unique Decomposition (CUD) pretext task, a Streamlit interface, batch evaluation,
-tests, and an explicit protocol for reporting results.
+[![CI](https://github.com/AmalakantiSivaRamaSuryaNandh/label-free-deep-learning-image-fusion/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/AmalakantiSivaRamaSuryaNandh/label-free-deep-learning-image-fusion/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/Python-3.10--3.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.3%2B-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-The deep model is an **independent educational reproduction inspired by DeFusion**, not the
-authors' official implementation. It follows the method's central idea: create two mask-and-noise
-views of one unlabeled image, learn their common and unique components, and reconstruct the clean
-scene. See the [ECCV 2022 paper](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136780706.pdf)
-and [official DeFusion repository](https://github.com/erfect2020/DecompositionForFusion).
+An M.Tech project that combines two registered source images into one information-rich fused
+image. The repository provides a compact self-supervised Common and Unique Decomposition (CUD)
+network, five reproducible classical baselines, a Streamlit demonstration, command-line tools,
+batch evaluation, automated tests, and research-reporting guidance.
 
-## What the project implements
+> [!IMPORTANT]
+> This is an independent educational implementation inspired by DeFusion, not the authors'
+> official implementation. The repository does not claim reproduction of experimental figures
+> until a named dataset, trained checkpoint, hardware configuration, and saved result artifacts
+> are supplied.
 
-- Average, PCA, Laplacian-pyramid, wavelet, and local-focus fusion.
-- An order-invariant CUD-inspired encoder/ensembler/decoder architecture.
-- Self-supervised targets for common, source-A unique, source-B unique, and reconstructed images.
-- COCO-compatible unlabeled-image training with reproducible configuration and checkpoints.
-- A Streamlit application with input validation, downloads, transparent metrics, and feature views.
-- CLI inference, matched-folder evaluation, synthetic demo generation, unit tests, linting, and CI.
+## Project information
 
-The software can support multi-focus, multi-exposure, and infrared-visible experiments, but the
-source images must already be geometrically registered. Resizing two images to the same dimensions
-is not a substitute for registration.
+| Field | Details |
+|---|---|
+| Student | **Amalakanti Siva Rama Surya Nandh** |
+| Programme | **M.Tech – Artificial Intelligence & Data Science** |
+| Project guide | **Mr. AVV Satya Narayana** |
+| Domain | Computer vision, deep learning, image fusion |
+| Training approach | Label-free, self-supervised feature decomposition |
 
-## Academic integrity and result status
+## Why this project
 
-No pretrained weights or experimental datasets are committed. Classical methods work immediately;
-the CUD option requires a checkpoint produced by the training command below. The figures `SSIM =
-0.831` and `60 FPS` mentioned in the project documents are **not reproduced by this repository**.
-Only results generated with a named dataset, protocol, hardware configuration, and saved output
-should be included in the final report.
+Multi-focus, multi-exposure, and infrared-visible sensors capture complementary information. A
+useful fusion method should preserve shared scene content while retaining information unique to
+each source. The project learns this decomposition without manually labelled fused targets by
+constructing two mask-and-noise views from each clean training image.
 
-The metric named `source_ssim_proxy` is the average SSIM between the fused image and the two source
-images. It is not SSIM against a ground-truth fused image and must not be described that way.
+## System architecture
+
+```mermaid
+flowchart LR
+    A[Source image A] --> E[Shared encoder]
+    B[Source image B] --> E
+    E --> C[Order-invariant common ensembler]
+    E --> U[Shared unique decoder]
+    C --> CP[Common projection]
+    U --> U1[Unique projection A]
+    U --> U2[Unique projection B]
+    C --> R[Reconstruction head]
+    U1 --> R
+    U2 --> R
+    R --> F[Fused image]
+```
+
+During training, the network predicts common content, two unique components, and the reconstructed
+clean scene. At inference, a trained checkpoint fuses a registered image pair without fine-tuning.
+The common representation and final reconstruction are invariant to swapping source A and B.
+
+## Key features
+
+- Self-supervised mask-and-noise CUD target generation.
+- Compact 2.53-million-parameter PyTorch model.
+- Average, PCA, Laplacian-pyramid, wavelet, and local-focus baselines.
+- Streamlit interface with input validation, transparent metrics, feature projections, and PNG
+  download.
+- CLI training and inference with saved configurations, histories, and checkpoints.
+- Matched-folder evaluation for classical and trained CUD methods, including per-pair data, mean,
+  standard deviation, runtime, environment metadata, and checkpoint SHA-256.
+- Unit tests, coverage reporting, linting, formatting checks, and GitHub Actions CI.
+
+## Repository structure
+
+```text
+.
+├── .github/                    CI workflow and contribution templates
+├── configs/                    Reproducible training configuration
+├── docs/                       Methodology and evaluation guidance
+├── scripts/                    Demo generation and batch evaluation
+├── src/defusion_mtech/         Model, training, inference, metrics, and baselines
+├── tests/                      Automated unit and smoke tests
+├── app.py                      Streamlit demonstration
+├── CITATION.cff                Software and source-paper citation metadata
+├── REFERENCES.bib              Report bibliography entries
+└── pyproject.toml              Package and tool configuration
+```
 
 ## Installation
 
-Python 3.10-3.13 is supported. A virtual environment is recommended.
+Python 3.10–3.13 is supported. Create an isolated environment and install the development package:
 
 ```bash
 python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# Linux/macOS
+
+# Windows PowerShell
+.venv\Scripts\Activate.ps1
+
+# Linux or macOS
 source .venv/bin/activate
 
 python -m pip install --upgrade pip
 python -m pip install -e ".[dev]"
 ```
 
-For a CUDA-enabled PyTorch build, install the wheel recommended for your CUDA version from the
-[official PyTorch setup page](https://pytorch.org/get-started/locally/) before installing this
+For CUDA, install the PyTorch build recommended for the local CUDA version before installing this
 project.
 
-## Run the web application
+## Run the application
 
 ```bash
 streamlit run app.py
 ```
 
-Upload two images, select a method, fuse them, review the metrics, and download the PNG result. For
-the CUD method, enter a path to a locally trained checkpoint such as `runs/cud/final.pt`.
+Classical methods work immediately. The CUD method requires a locally trained checkpoint; the
+application will not silently fall back to random weights.
 
-## Quick classical-method demo
+## Quick demonstration
 
 ```bash
 python scripts/create_demo_pair.py
-defusion-fuse \
-  --image-a examples/demo_pair/source_a.png \
-  --image-b examples/demo_pair/source_b.png \
-  --method laplacian \
-  --output runs/demo/fused.png \
-  --metrics-json runs/demo/metrics.json
+defusion-fuse --image-a examples/demo_pair/source_a.png --image-b examples/demo_pair/source_b.png --method laplacian --output runs/demo/fused.png --metrics-json runs/demo/metrics.json
 ```
-
-On Windows PowerShell, place the command on one line or use PowerShell's continuation syntax.
 
 ## Train the CUD model
 
-Download or prepare an unlabeled natural-image folder. The original DeFusion paper used 50,000 COCO
-images, 256x256 crops, Adam, 50 epochs, batch size 8, initial learning rate `1e-3`, and a factor-of-2
-learning-rate reduction every ten epochs. The checked-in configuration mirrors those values.
+Prepare an unlabeled natural-image directory. The included configuration mirrors the broad ECCV
+2022 training setup: 50,000 images, 256 × 256 crops, Adam, 50 epochs, batch size 8, learning rate
+`1e-3`, and a factor-of-two reduction every ten epochs.
 
 ```bash
 defusion-train --config configs/train_cud.json --data-dir data/coco/train2017
 ```
 
-For a small pipeline check before a long run:
+The output directory contains:
+
+- `resolved_config.json` – exact resolved parameters;
+- `history.jsonl` – per-epoch training losses and runtime;
+- `latest.pt` and `final.pt` – model and optimizer checkpoints.
+
+For a quick pipeline check:
 
 ```bash
-defusion-train \
-  --data-dir path/to/a/small/image/folder \
-  --output-dir runs/smoke \
-  --epochs 1 \
-  --batch-size 2 \
-  --crop-size 64 \
-  --base-channels 8 \
-  --max-images 8
+defusion-train --data-dir path/to/images --output-dir runs/smoke --epochs 1 --batch-size 2 --crop-size 64 --base-channels 8 --max-images 8
 ```
-
-The training directory contains the resolved configuration, JSONL loss history, and checkpoints.
 
 ## Deep-model inference
 
 ```bash
-defusion-fuse \
-  --image-a path/to/source_a.png \
-  --image-b path/to/source_b.png \
-  --method cud \
-  --checkpoint runs/cud/final.pt \
-  --output runs/inference/fused.png
+defusion-fuse --image-a path/to/source_a.png --image-b path/to/source_b.png --method cud --checkpoint runs/cud/final.pt --output runs/inference/fused.png --metrics-json runs/inference/metrics.json
 ```
 
-Randomly initialized deep-model output is intentionally blocked because it is not a valid result.
+Inputs must depict the same geometrically registered scene. Resizing or center-cropping only makes
+dimensions match; it is not image registration.
 
-## Batch evaluation
+## Reproducible evaluation
 
-Place matched filenames in two directories and run:
+Put corresponding filenames in `source_a` and `source_b`, then evaluate baselines and a trained CUD
+checkpoint together:
 
 ```bash
-python scripts/evaluate_pairs.py \
-  --source-a data/evaluation/source_a \
-  --source-b data/evaluation/source_b \
-  --output-dir runs/evaluation
+python scripts/evaluate_pairs.py --source-a data/evaluation/source_a --source-b data/evaluation/source_b --output-dir runs/evaluation --methods average pca laplacian wavelet local_focus cud --checkpoint runs/cud/final.pt --task multi-focus --dataset-name MFIFB --commit 0ce56f5
 ```
 
-The script saves every fused image, per-pair CSV metrics, and mean metrics by method. The current
-script evaluates classical baselines; evaluate the trained CUD checkpoint using the same image
-pairs and extend the table only after the checkpoint and environment are fixed.
+The evaluator saves fused PNGs, per-pair CSV metrics, and a JSON summary containing the pair count,
+mean, standard deviation, runtime, environment, and checkpoint hash. Evaluate multi-focus,
+multi-exposure, and infrared-visible datasets separately.
+
+The included indicators are entropy, spatial frequency, mutual-information sum, and
+`source_ssim_proxy`. The last value is average SSIM to the two inputs—not ground-truth SSIM. Add
+accepted task-specific metrics such as MEF-SSIM, VIF, QAB/F, or SCD only with documented reference
+implementations.
 
 ## Verification
 
 ```bash
 ruff check .
+ruff format --check .
 pytest --cov=defusion_mtech --cov-report=term-missing
 ```
 
-## Repository structure
+## Result integrity
 
-```text
-app.py                         Streamlit interface
-configs/train_cud.json         Paper-aligned default training configuration
-docs/                          Method, evaluation, and submission guidance
-scripts/                       Demo-pair generation and batch evaluation
-src/defusion_mtech/            Reusable fusion package
-tests/                         Unit and model smoke tests
-REFERENCES.bib                 Primary references for the report
-```
+No pretrained weights or research datasets are committed. Figures such as `SSIM = 0.831` or
+`60 FPS` must not be presented as this implementation's results unless they are reproduced using a
+frozen protocol and preserved evidence. Record the commit hash, checkpoint hash, dataset version,
+pair list, preprocessing, seed, hardware, software versions, precision, and exact command.
 
-## Project documentation
+## Documentation
 
 - [Methodology](docs/methodology.md)
 - [Evaluation protocol](docs/evaluation_protocol.md)
-- [Final-submission corrections](docs/report_corrections.md)
+- [Corrections before final M.Tech submission](docs/report_corrections.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
 
 ## Attribution
 
 The CUD concept and DeFusion framework were introduced by Pengwei Liang, Junjun Jiang, Xianming
-Liu, and Jiayi Ma at ECCV 2022. This repository was independently written for educational use and
-does not copy the official implementation. Cite the original paper using `REFERENCES.bib`.
+Liu, and Jiayi Ma in *Fusion from Decomposition: A Self-Supervised Decomposition Approach for
+Image Fusion* (ECCV 2022). See the [paper](https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136780706.pdf),
+the [official implementation](https://github.com/erfect2020/DecompositionForFusion), and
+[`REFERENCES.bib`](REFERENCES.bib).
 
 ## License
 
-The project code is released under the MIT License. Dataset and model-weight licenses remain the
-responsibility of their respective owners.
+Project code is available under the [MIT License](LICENSE). Dataset and model-weight licenses remain
+the responsibility of their respective owners.

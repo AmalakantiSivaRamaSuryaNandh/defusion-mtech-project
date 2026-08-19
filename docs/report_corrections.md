@@ -1,9 +1,10 @@
 # Corrections Before Final M.Tech Submission
 
-## Required identity and contribution edits
+## Identity and contribution checks
 
-- Replace the placeholder student author in `pyproject.toml`, `CITATION.cff`, and `LICENSE`.
-- Use one exact project title in the report, slides, repository, and demonstration.
+- [x] Replace the placeholder student author in `pyproject.toml`, `CITATION.cff`, and `LICENSE`.
+- [x] Use the exact project title in the repository and demonstration.
+- [ ] Confirm the same exact title in the final report and slides.
 - State that the software is an independent educational implementation inspired by DeFusion.
 - Add a student-contribution subsection covering the order-invariant architecture, Streamlit app,
   baseline implementations, evaluation tooling, tests, and any experiments actually completed.

@@ -61,3 +61,14 @@ uncompressed fused outputs available for examination.
 
 Values such as `0.831` or `60 FPS` belong in the final report only after this table can be completed
 with saved evidence.
+
+## 9. Repository evaluator
+
+The matched-folder evaluator supports the five classical baselines and a trained CUD checkpoint.
+When CUD is selected, `--checkpoint` is mandatory. Supply `--task`, `--dataset-name`, and `--commit`
+so `summary.json` records the experiment context. The output includes per-pair CSV measurements,
+sample means and standard deviations, runtime, environment information, and the checkpoint SHA-256.
+
+The evaluator does not automatically make an experiment publication-ready. Preserve the dataset
+pair list and license information separately, verify metric implementations against their cited
+definitions, and repeat controlled runtime measurements with warm-up before reporting FPS.

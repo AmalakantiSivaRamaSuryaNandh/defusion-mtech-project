@@ -29,11 +29,18 @@ def cached_model(checkpoint: str, device: str):
 
 
 def main() -> None:
-    st.set_page_config(page_title="DeFusion M.Tech Project", page_icon="🧩", layout="wide")
-    st.title("Label-Free Image Fusion")
+    st.set_page_config(page_title="Label-Free Image Fusion | M.Tech", page_icon="🧩", layout="wide")
+    st.title(
+        "A Label-Free Deep Learning Framework for Image Fusion Through Self-Supervised "
+        "Feature Decomposition"
+    )
     st.caption(
         "An educational common/unique feature-decomposition system for multi-focus, "
         "multi-exposure, and infrared-visible image pairs."
+    )
+    st.caption(
+        "M.Tech (Artificial Intelligence & Data Science) project by "
+        "Amalakanti Siva Rama Surya Nandh"
     )
 
     with st.sidebar:

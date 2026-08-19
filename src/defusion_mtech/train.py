@@ -51,9 +51,7 @@ def _parse_arguments() -> argparse.Namespace:
     parser.add_argument("--num-workers", type=int)
     parser.add_argument("--seed", type=int)
     parser.add_argument("--max-images", type=int)
-    parser.add_argument(
-        "--mixed-precision", action=argparse.BooleanOptionalAction, default=None
-    )
+    parser.add_argument("--mixed-precision", action=argparse.BooleanOptionalAction, default=None)
     return parser.parse_args()
 
 
@@ -93,7 +91,32 @@ def set_seed(seed: int) -> None:
         torch.cuda.manual_seed_all(seed)
 
 
+def validate_config(config: TrainConfig) -> None:
+    """Reject settings that cannot produce a valid trained checkpoint."""
+    if config.crop_size < 32 or config.crop_size % 8:
+        raise ValueError("crop_size must be at least 32 and divisible by 8")
+    if config.epochs < 1:
+        raise ValueError("epochs must be at least 1; zero epochs would save untrained weights")
+    if config.batch_size < 1:
+        raise ValueError("batch_size must be at least 1")
+    if config.learning_rate <= 0:
+        raise ValueError("learning_rate must be greater than 0")
+    if config.lr_step_size < 1:
+        raise ValueError("lr_step_size must be at least 1")
+    if config.lr_gamma <= 0:
+        raise ValueError("lr_gamma must be greater than 0")
+    if config.base_channels < 1:
+        raise ValueError("base_channels must be at least 1")
+    if config.num_workers < 0:
+        raise ValueError("num_workers cannot be negative")
+    if config.max_images is not None and config.max_images < 1:
+        raise ValueError("max_images must be at least 1 or None")
+    if config.seed < 0:
+        raise ValueError("seed cannot be negative")
+
+
 def train(config: TrainConfig) -> Path:
+    validate_config(config)
     set_seed(config.seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     output_dir = Path(config.output_dir)
@@ -123,6 +146,7 @@ def train(config: TrainConfig) -> Path:
     amp_enabled = config.mixed_precision and device.type == "cuda"
     scaler = torch.amp.GradScaler("cuda", enabled=amp_enabled)
     history_path = output_dir / "history.jsonl"
+    history_path.write_text("", encoding="utf-8")
 
     for epoch in range(1, config.epochs + 1):
         model.train()

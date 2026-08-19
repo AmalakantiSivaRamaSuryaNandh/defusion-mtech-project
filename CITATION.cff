@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: "Label-Free Image Fusion Through Self-Supervised Feature Decomposition"
+message: "Please cite this educational implementation and the original DeFusion paper."
+type: software
+authors:
+  - family-names: "M.Tech Project Student"
+version: 0.1.0
+date-released: 2026-08-19
+license: MIT
+references:
+  - type: conference-paper
+    title: "Fusion from Decomposition: A Self-Supervised Decomposition Approach for Image Fusion"
+    authors:
+      - family-names: Liang
+        given-names: Pengwei
+      - family-names: Jiang
+        given-names: Junjun
+      - family-names: Liu
+        given-names: Xianming
+      - family-names: Ma
+        given-names: Jiayi
+    year: 2022
+    conference:
+      name: European Conference on Computer Vision
+    doi: 10.1007/978-3-031-19797-0_41
